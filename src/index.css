@@ -36,6 +36,13 @@
     --ring: 214 100% 50%;
 
     --radius: 0.5rem;
+
+    /* Korbly brand colors */
+    --korbly-navy: 210 100% 8%;
+    --korbly-dark: 210 50% 12%;
+    --korbly-blue: 214 100% 50%;
+    --korbly-gold: 38 92% 50%;
+    --korbly-silver: 210 20% 70%;
   }
 
   * {
@@ -45,6 +52,39 @@
   body {
     @apply bg-background text-foreground font-sans;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  /* Enhanced accessibility - better contrast ratios */
+  .text-korbly-navy {
+    color: rgb(3 7 18); /* Enhanced contrast */
+  }
+
+  .text-korbly-dark {
+    color: rgb(15 23 42); /* Enhanced contrast */
+  }
+
+  .text-korbly-silver {
+    color: rgb(100 116 139); /* Better contrast on dark backgrounds */
+  }
+
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    .text-korbly-silver {
+      color: rgb(71 85 105);
+    }
+    
+    .glass {
+      @apply bg-white/20 backdrop-blur-lg border border-white/40;
+    }
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 
@@ -59,5 +99,91 @@
   
   .institutional-shadow {
     box-shadow: 0 25px 50px -12px rgba(0, 132, 255, 0.1);
+  }
+
+  /* Enhanced mobile responsiveness */
+  .container-mobile {
+    @apply px-4 sm:px-6 lg:px-8 xl:px-12;
+  }
+
+  .text-responsive-xl {
+    @apply text-xl sm:text-2xl lg:text-3xl xl:text-4xl;
+  }
+
+  .text-responsive-lg {
+    @apply text-lg sm:text-xl lg:text-2xl;
+  }
+
+  .grid-responsive {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
+  }
+
+  .space-responsive {
+    @apply space-y-4 sm:space-y-6 lg:space-y-8;
+  }
+
+  .padding-responsive {
+    @apply py-8 sm:py-12 lg:py-16 xl:py-20;
+  }
+
+  /* Focus states for better accessibility */
+  .focus-enhanced {
+    @apply focus:outline-none focus:ring-2 focus:ring-korbly-blue focus:ring-offset-2 focus:ring-offset-white;
+  }
+
+  /* Button hover states with better contrast */
+  .btn-primary {
+    @apply bg-korbly-blue hover:bg-blue-700 text-white font-medium transition-colors duration-200;
+  }
+
+  .btn-secondary {
+    @apply bg-white hover:bg-gray-50 text-korbly-navy border border-gray-300 font-medium transition-colors duration-200;
+  }
+}
+
+/* Animation utilities */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Mobile-first responsive breakpoints */
+@media (max-width: 640px) {
+  .container {
+    @apply px-4;
+  }
+  
+  .text-4xl, .text-5xl {
+    @apply text-2xl;
+  }
+  
+  .text-3xl {
+    @apply text-xl;
+  }
+  
+  .py-20 {
+    @apply py-12;
+  }
+  
+  .py-16 {
+    @apply py-10;
+  }
+}
+
+@media (max-width: 768px) {
+  .lg\:grid-cols-2 {
+    @apply grid-cols-1;
+  }
+  
+  .lg\:grid-cols-3 {
+    @apply grid-cols-1;
+  }
+  
+  .lg\:text-left {
+    @apply text-center;
   }
 }
