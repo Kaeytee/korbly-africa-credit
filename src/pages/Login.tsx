@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 import { 
   Eye, 
   EyeOff, 
@@ -29,29 +31,59 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showDemoAccounts, setShowDemoAccounts] = useState(false);
+  const [loginError, setLoginError] = useState('');
+  
+  // Get authentication context and navigation function
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async () => {
     setIsLoading(true);
+    setLoginError('');
     
-    // Simulate login process
-    setTimeout(() => {
+    try {
+      // Call the actual login function from AuthContext
+      const success = await login(formData.email, formData.password);
+      
+      if (success) {
+        // Navigate to dashboard on successful login
+        navigate('/dashboard');
+      } else {
+        setLoginError('Invalid email or password. Please try again.');
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      setLoginError('An error occurred during login. Please try again.');
       setIsLoading(false);
-      // Handle login logic here
-      console.log('Login attempt:', formData);
-    }, 2000);
+    }
   };
 
   const handleChange = (field: string, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleDemoLogin = (email: string, password: string, type: string) => {
+  const handleDemoLogin = async (email: string, password: string, type: string) => {
     setFormData({ email, password, rememberMe: false });
     setIsLoading(true);
-    setTimeout(() => {
+    setLoginError('');
+    
+    try {
+      // Use the same login function for demo accounts
+      const success = await login(email, password);
+      
+      if (success) {
+        // Navigate to dashboard on successful login
+        navigate('/dashboard');
+      } else {
+        setLoginError(`Demo login failed for ${type}. Please try again.`);
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.error('Demo login error:', error);
+      setLoginError('An error occurred during login. Please try again.');
       setIsLoading(false);
-      console.log(`Demo login as ${type}`);
-    }, 1500);
+    }
   };
 
   // Interactive Hover Button Component
@@ -299,6 +331,12 @@ const Login = () => {
 
             {/* Login Form */}
             <div className="space-y-6">
+              {/* Error message */}
+              {loginError && (
+                <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm">
+                  {loginError}
+                </div>
+              )}
               <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-2">
                   Email Address

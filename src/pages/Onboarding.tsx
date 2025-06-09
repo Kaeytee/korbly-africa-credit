@@ -15,8 +15,8 @@ const Onboarding = () => {
       description: "Welcome to your Korbly institutional dashboard. Your account is now ready for private credit management.",
     });
     
-    // Navigate to dashboard (or home for now)
-    navigate('/');
+    // Navigate to dashboard after onboarding is complete
+    navigate('/dashboard');
   };
 
   return (

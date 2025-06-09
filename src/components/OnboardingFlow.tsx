@@ -72,13 +72,26 @@ const OnboardingFlow = ({ onComplete, userType }: OnboardingFlowProps) => {
   const steps = getStepsForUserType(userType);
   const progress = ((currentStep + 1) / steps.length) * 100;
 
+  // Handle step completion with proper state management
   const handleStepComplete = () => {
-    setCompletedSteps([...completedSteps, currentStep]);
+    // Mark current step as completed
+    if (!completedSteps.includes(currentStep)) {
+      setCompletedSteps([...completedSteps, currentStep]);
+    }
+    
+    // Move to next step or complete onboarding
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
+      // Call the onComplete callback provided by parent component
+      // This will navigate to the dashboard
       onComplete();
     }
+  };
+  
+  // Function to handle going back to previous step
+  const handlePreviousStep = () => {
+    setCurrentStep(Math.max(0, currentStep - 1));
   };
 
   const currentStepData = steps[currentStep];
@@ -192,7 +205,7 @@ const OnboardingFlow = ({ onComplete, userType }: OnboardingFlowProps) => {
               <Button
                 variant="outline"
                 disabled={currentStep === 0}
-                onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
+                onClick={handlePreviousStep}
                 className="border-white text-white hover:bg-white hover:text-korbly-navy"
               >
                 Previous
