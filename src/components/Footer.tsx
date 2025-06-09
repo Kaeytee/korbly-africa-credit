@@ -1,7 +1,10 @@
 
 import { Link } from 'react-router-dom';
+import { useMemo } from 'react';
 
 const Footer = () => {
+  // Get current year dynamically to avoid manual updates
+  const currentYear = useMemo(() => new Date().getFullYear(), []);
   return (
     <footer className="bg-korbly-navy text-white">
       <div className="container mx-auto px-4 lg:px-8 py-12">
@@ -50,7 +53,7 @@ const Footer = () => {
         <div className="border-t border-white/10 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-korbly-silver text-sm">
-              © 2024 Korbly. All rights reserved. Licensed and regulated financial technology platform.
+              © {currentYear} Korbly. All rights reserved. Licensed and regulated financial technology platform.
             </p>
             <div className="mt-4 md:mt-0 flex space-x-6">
               <span className="text-korbly-silver text-sm">BoG Compliant</span>

@@ -5,7 +5,7 @@
 
 Korbly is a comprehensive institutional private credit platform designed for pension funds, insurance companies, asset managers, and other financial institutions operating in African markets. The platform provides sophisticated tools for private credit investment management, portfolio analysis, and regulatory compliance.
 
-**Project URL**: https://lovable.dev/projects/28fe4efe-4899-4d7f-b15d-4e9bc898b89a
+**Project URL**: 
 
 ## 🔐 Authentication System
 
@@ -175,7 +175,7 @@ Korbly is a comprehensive institutional private credit platform designed for pen
 
 ```bash
 # Clone the repository
-git clone <YOUR_GIT_URL>
+git clone https://github.com/Kaeytee/korbly-africa-credit.git
 
 # Navigate to project directory
 cd korbly-africa-credit
@@ -219,14 +219,11 @@ npm run preview
 
 ## 📞 Support & Documentation
 
-### Resources
-- [Lovable Documentation](https://docs.lovable.dev/)
-- [Lovable Discord Community](https://discord.com/channels/1119885301872070706/1280461670979993613)
-- [Project Management](https://lovable.dev/projects/28fe4efe-4899-4d7f-b15d-4e9bc898b89a)
+
 
 ### Development Support
 For technical issues or feature requests:
-1. Use the Lovable project chat interface
+1. Submit an issue through our project management system
 2. Check the troubleshooting documentation
 3. Join the Discord community for peer support
 
@@ -256,4 +253,9 @@ For demo access or testing assistance:
 
 ---
 
-© 2024 Korbly. All rights reserved.
+© <span id="copyright-year">2025</span> Korbly. All rights reserved.
+
+<script>
+  // Automatically update the copyright year
+  document.getElementById('copyright-year').textContent = new Date().getFullYear();
+</script>

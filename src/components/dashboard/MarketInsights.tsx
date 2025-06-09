@@ -2,14 +2,22 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { TrendingUp, TrendingDown, Calendar, Globe } from 'lucide-react';
+import { useMemo } from 'react';
 
 const MarketInsights = () => {
+  // Get current year and create formatted dates dynamically
+  const currentYear = useMemo(() => new Date().getFullYear(), []);
+  
+  // Helper function to format dates with current year
+  const formatDateWithCurrentYear = (monthDay: string) => {
+    return `${currentYear}-${monthDay}`;
+  };
   const insights = [
     {
       id: 1,
-      title: 'African Private Credit Market Outlook 2024',
+      title: `African Private Credit Market Outlook ${currentYear}`,
       summary: 'Private credit markets across Africa show strong growth potential with increasing demand for alternative financing.',
-      date: '2024-01-15',
+      date: formatDateWithCurrentYear('01-15'),
       category: 'Market Analysis',
       impact: 'High',
       trend: 'positive',
@@ -18,7 +26,7 @@ const MarketInsights = () => {
       id: 2,
       title: 'Ghana Monetary Policy Update',
       summary: 'Bank of Ghana maintains policy rate at 29% to combat inflation and stabilize the Cedi.',
-      date: '2024-01-12',
+      date: formatDateWithCurrentYear('01-12'),
       category: 'Policy Update',
       impact: 'Medium',
       trend: 'neutral',
@@ -27,7 +35,7 @@ const MarketInsights = () => {
       id: 3,
       title: 'Nigeria Trade Finance Opportunities',
       summary: 'Growing demand for trade finance in Nigeria creates new opportunities for institutional investors.',
-      date: '2024-01-10',
+      date: formatDateWithCurrentYear('01-10'),
       category: 'Opportunity',
       impact: 'High',
       trend: 'positive',

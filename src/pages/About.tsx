@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Link } from 'react-router-dom';
 import Layout from '@/components/Layout';
+import { useMemo } from 'react';
 import { 
   Shield, 
   TrendingUp, 
@@ -15,12 +16,14 @@ import {
 } from 'lucide-react';
 
 const About = () => {
+  // Get current year dynamically to avoid manual updates
+  const currentYear = useMemo(() => new Date().getFullYear(), []);
   const milestones = [
     { year: '2020', event: 'Company Founded', description: 'Established with a vision to transform African private credit markets' },
     { year: '2021', event: 'Regulatory Approval', description: 'Obtained licensing from key African financial regulators' },
     { year: '2022', event: 'Platform Launch', description: 'First institutional clients onboarded with $500M AUM' },
     { year: '2023', event: 'Major Expansion', description: 'Crossed $1B AUM and expanded to 5 African markets' },
-    { year: '2024', event: 'Market Leadership', description: 'Became the leading institutional private credit platform in Africa' },
+    { year: String(currentYear), event: 'Market Leadership', description: 'Became the leading institutional private credit platform in Africa' },
   ];
 
   const leadership = [
