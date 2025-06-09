@@ -1,11 +1,14 @@
+
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 import LoginHeroSection from '@/components/login/LoginHeroSection';
 import LoginFormContainer from '@/components/login/LoginFormContainer';
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -19,22 +22,10 @@ const Login = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simulate login - check for demo credentials
-    const demoCredentials = [
-      { email: 'demo.pension@korbly.com', password: 'PensionDemo123!' },
-      { email: 'demo.insurance@korbly.com', password: 'InsureDemo123!' },
-      { email: 'demo.hnwi@korbly.com', password: 'HnwiDemo123!' },
-      { email: 'demo.dfi@korbly.com', password: 'DfiDemo123!' },
-      { email: 'demo.asset@korbly.com', password: 'AssetDemo123!' },
-      { email: 'admin@korbly.com', password: 'AdminKorbly2025!' }
-    ];
-
-    const validCredential = demoCredentials.find(
-      cred => cred.email === formData.email && cred.password === formData.password
-    );
-
-    setTimeout(() => {
-      if (validCredential) {
+    try {
+      const success = await login(formData.email, formData.password);
+      
+      if (success) {
         toast({
           title: "Login Successful",
           description: "Welcome back to your institutional dashboard.",
@@ -47,8 +38,15 @@ const Login = () => {
           variant: "destructive"
         });
       }
+    } catch (error) {
+      toast({
+        title: "Login Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   const handleChange = (field: string, value: string | boolean) => {
