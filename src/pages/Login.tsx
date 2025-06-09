@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
@@ -40,7 +39,7 @@ const Login = () => {
           title: "Login Successful",
           description: "Welcome back to your institutional dashboard.",
         });
-        navigate('/');
+        navigate('/dashboard');
       } else {
         toast({
           title: "Invalid Credentials",
