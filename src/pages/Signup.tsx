@@ -99,7 +99,7 @@ const Signup = () => {
     }));
   };
 
-  const passwordStrength = (password: string) => {
+  const passwordStrength = (password: string): number => {
     let strength = 0;
     if (password.length >= 8) strength += 20;
     if (/[A-Z]/.test(password)) strength += 20;
@@ -109,16 +109,16 @@ const Signup = () => {
     return strength;
   };
 
-  const isStepValid = () => {
+  const isStepValid = (): boolean => {
     switch (currentStep) {
       case 1:
-        return formData.institutionName && formData.institutionType && formData.assetsUnderManagement && formData.primaryCountry;
+        return !!(formData.institutionName && formData.institutionType && formData.assetsUnderManagement && formData.primaryCountry);
       case 2:
-        return formData.fullName && formData.jobTitle && formData.workEmail && formData.phoneNumber;
+        return !!(formData.fullName && formData.jobTitle && formData.workEmail && formData.phoneNumber);
       case 3:
-        return Object.values(formData.complianceChecks).every(check => check);
+        return Object.values(formData.complianceChecks).every(check => check === true);
       case 4:
-        return formData.password && formData.confirmPassword && formData.password === formData.confirmPassword && passwordStrength(formData.password) === 100;
+        return !!(formData.password && formData.confirmPassword && formData.password === formData.confirmPassword && passwordStrength(formData.password) === 100);
       default:
         return false;
     }
