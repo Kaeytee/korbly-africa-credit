@@ -53,72 +53,106 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const login = async (email: string, password: string): Promise<boolean> => {
     setIsLoading(true);
     
-    // Demo credentials mapping
+    // Demo credentials mapping - using passwords from README.md
     const demoCredentials = [
       { 
         email: 'demo.pension@korbly.com', 
-        password: 'PensionDemo123!',
+        password: 'PensionDemo123!', // Password from README
         user: {
           id: '1',
           email: 'demo.pension@korbly.com',
           name: 'Sarah Johnson',
-          role: 'Portfolio Manager',
-          organization: 'State Pension Fund'
+          role: 'Senior Portfolio Manager',
+          organization: 'Ghana National Pension Fund'
         }
       },
       { 
         email: 'demo.insurance@korbly.com', 
-        password: 'InsureDemo123!',
+        password: 'InsureDemo123!', // Password from README
         user: {
           id: '2',
           email: 'demo.insurance@korbly.com',
           name: 'Michael Chen',
-          role: 'Investment Director',
-          organization: 'Global Insurance Group'
+          role: 'Chief Investment Officer',
+          organization: 'African Re Insurance'
         }
       },
       { 
         email: 'demo.hnwi@korbly.com', 
-        password: 'HnwiDemo123!',
+        password: 'HnwiDemo123!', // Password from README
         user: {
           id: '3',
           email: 'demo.hnwi@korbly.com',
           name: 'Alexandra Rodriguez',
-          role: 'Family Office Manager',
-          organization: 'Private Wealth Solutions'
+          role: 'Investment Advisor',
+          organization: 'Private Family Office'
         }
       },
       { 
         email: 'demo.dfi@korbly.com', 
-        password: 'DfiDemo123!',
+        password: 'DfiDemo123!', // Password from README
         user: {
           id: '4',
           email: 'demo.dfi@korbly.com',
           name: 'David Kim',
-          role: 'Chief Investment Officer',
-          organization: 'Development Finance Corp'
+          role: 'Private Credit Analyst',
+          organization: 'African Development Bank'
         }
       },
       { 
         email: 'demo.asset@korbly.com', 
-        password: 'AssetDemo123!',
+        password: 'AssetDemo123!', // Password from README
         user: {
           id: '5',
           email: 'demo.asset@korbly.com',
           name: 'Emma Thompson',
-          role: 'Senior Analyst',
-          organization: 'Alternative Asset Management'
+          role: 'Fund Manager',
+          organization: 'Actis Capital'
         }
       },
       { 
         email: 'admin@korbly.com', 
-        password: 'AdminKorbly2025!',
+        password: 'AdminKorbly2025!', // Password from README
         user: {
           id: '6',
           email: 'admin@korbly.com',
           name: 'James Wilson',
           role: 'Platform Administrator',
           organization: 'Korbly Technologies'
+        }
+      },
+      // Adding support for demo123 password for demo accounts as mentioned by the user
+      { 
+        email: 'demo.pension@korbly.com', 
+        password: 'demo123',
+        user: {
+          id: '1',
+          email: 'demo.pension@korbly.com',
+          name: 'Sarah Johnson',
+          role: 'Senior Portfolio Manager',
+          organization: 'Ghana National Pension Fund'
+        }
+      },
+      { 
+        email: 'demo.insurance@korbly.com', 
+        password: 'demo123',
+        user: {
+          id: '2',
+          email: 'demo.insurance@korbly.com',
+          name: 'Michael Chen',
+          role: 'Chief Investment Officer',
+          organization: 'African Re Insurance'
+        }
+      },
+      { 
+        email: 'demo.asset@korbly.com', 
+        password: 'demo123',
+        user: {
+          id: '5',
+          email: 'demo.asset@korbly.com',
+          name: 'Emma Thompson',
+          role: 'Fund Manager',
+          organization: 'Actis Capital'
         }
       }
     ];

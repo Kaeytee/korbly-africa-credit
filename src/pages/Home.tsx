@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import Layout from '@/components/Layout';
 import { 
   Shield, 
   TrendingUp, 
@@ -239,8 +240,9 @@ const Home = () => {
   };
 
   return (
-    <div className="bg-white min-h-screen overflow-x-hidden">
-      <style jsx>{`
+    <Layout>
+      <div className="bg-white min-h-screen overflow-x-hidden">
+      <style>{`
         @keyframes float {
           0%, 100% { transform: translateY(0px); }
           50% { transform: translateY(-10px); }
@@ -635,6 +637,7 @@ const Home = () => {
         </div>
       </section>
     </div>
+    </Layout>
   );
 };
 
