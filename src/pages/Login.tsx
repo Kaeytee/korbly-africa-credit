@@ -1,6 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
 import { 
   Eye, 
   EyeOff, 
@@ -19,7 +17,8 @@ import {
   Zap,
   BarChart3,
   UserPlus,
-  HelpCircle
+  HelpCircle,
+  ChevronRight
 } from 'lucide-react';
 
 const Login = () => {
@@ -32,31 +31,21 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showDemoAccounts, setShowDemoAccounts] = useState(false);
   const [loginError, setLoginError] = useState('');
-  
-  // Get authentication context and navigation function
-  const { login } = useAuth();
-  const navigate = useNavigate();
 
   const handleSubmit = async () => {
     setIsLoading(true);
     setLoginError('');
     
-    try {
-      // Call the actual login function from AuthContext
-      const success = await login(formData.email, formData.password);
-      
-      if (success) {
-        // Navigate to dashboard on successful login
-        navigate('/dashboard');
+    // Simulate login process
+    setTimeout(() => {
+      if (formData.email && formData.password) {
+        alert('Login successful! Welcome to Korbly.');
+        setIsLoading(false);
       } else {
-        setLoginError('Invalid email or password. Please try again.');
+        setLoginError('Please enter your email and password.');
         setIsLoading(false);
       }
-    } catch (error) {
-      console.error('Login error:', error);
-      setLoginError('An error occurred during login. Please try again.');
-      setIsLoading(false);
-    }
+    }, 2000);
   };
 
   const handleChange = (field: string, value: string | boolean) => {
@@ -68,72 +57,11 @@ const Login = () => {
     setIsLoading(true);
     setLoginError('');
     
-    try {
-      // Use the same login function for demo accounts
-      const success = await login(email, password);
-      
-      if (success) {
-        // Navigate to dashboard on successful login
-        navigate('/dashboard');
-      } else {
-        setLoginError(`Demo login failed for ${type}. Please try again.`);
-        setIsLoading(false);
-      }
-    } catch (error) {
-      console.error('Demo login error:', error);
-      setLoginError('An error occurred during login. Please try again.');
+    setTimeout(() => {
+      alert(`Demo login successful! Welcome to ${type} dashboard.`);
       setIsLoading(false);
-    }
+    }, 2000);
   };
-
-  // Interactive Hover Button Component
-  const InteractiveHoverButton = ({ children, className = "", onClick, ...props }) => {
-    const glowColors = ["#3B82F6", "#F59E0B", "#8B5CF6", "#06B6D4"];
-    const scale = 1.6;
-    const duration = 6;
-
-    return (
-      <button
-        className={`group relative inline-flex items-center justify-center overflow-hidden rounded-full px-8 py-4 font-semibold transition-all duration-300 border border-white/20 bg-white/10 backdrop-blur-md text-white hover:shadow-2xl hover:scale-105 ${className}`}
-        onClick={onClick}
-        {...props}
-      >
-        {/* Animated Glow Effect */}
-        <div
-          className="pointer-events-none absolute inset-0 z-0 transform-gpu blur-lg animate-pulse"
-          style={{
-            background: `conic-gradient(from 0deg, ${glowColors.join(", ")})`,
-            transform: `scale(${scale})`,
-            animation: `glow ${duration}s ease-in-out infinite alternate`,
-          }}
-        />
-
-        {/* Foreground Text */}
-        <span className="relative z-10 flex items-center gap-2 transition-all duration-300 group-hover:translate-x-1">
-          {children}
-          <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-        </span>
-      </button>
-    );
-  };
-
-  // Floating particles for hero section
-  const ParticleBackground = () => (
-    <div className="absolute inset-0 overflow-hidden">
-      {[...Array(40)].map((_, i) => (
-        <div
-          key={i}
-          className="absolute w-1 h-1 bg-white/20 rounded-full animate-pulse"
-          style={{
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
-            animationDelay: `${Math.random() * 3}s`,
-            animationDuration: `${2 + Math.random() * 2}s`,
-          }}
-        />
-      ))}
-    </div>
-  );
 
   const demoAccounts = [
     {
@@ -163,295 +91,272 @@ const Login = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 flex">
-      <style jsx>{`
-        @keyframes glow {
-          0% { filter: hue-rotate(0deg); }
-          100% { filter: hue-rotate(360deg); }
+    <div className="min-h-screen bg-white">
+      <style>{`
+        html {
+          scroll-behavior: smooth;
         }
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-10px); }
+        }
+        @keyframes pulse-glow {
+          0%, 100% { opacity: 0.4; }
+          50% { opacity: 0.8; }
+        }
+        .animate-float { animation: float 6s ease-in-out infinite; }
+        .animate-pulse-glow { animation: pulse-glow 4s ease-in-out infinite; }
       `}</style>
 
-      {/* Left Side - Hero Section */}
-      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
-          <ParticleBackground />
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-purple-600/20" />
+      {/* Hero Section */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        {/* Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-50 via-white to-blue-50/30">
+          <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-gradient-to-br from-blue-200/20 to-blue-300/30 rounded-full blur-xl animate-float"></div>
+          <div className="absolute top-1/3 right-1/4 w-24 h-24 bg-gradient-to-br from-purple-200/20 to-purple-300/30 rounded-full blur-xl animate-float" style={{animationDelay: '2s'}}></div>
+          <div className="absolute bottom-1/4 left-1/3 w-40 h-40 bg-gradient-to-br from-amber-200/15 to-orange-200/25 rounded-full blur-xl animate-float" style={{animationDelay: '4s'}}></div>
         </div>
-        
-        <div className="relative z-10 flex flex-col justify-center px-12 py-16 text-white">
-          <div className="space-y-8">
-            {/* Header */}
-            <div className="space-y-4">
-              <div className="inline-flex items-center px-4 py-2 bg-blue-500/20 rounded-full border border-blue-400/30 backdrop-blur-sm">
-                <Shield className="w-4 h-4 text-blue-300 mr-2" />
-                <span className="text-blue-200 text-sm font-medium">Secure Institutional Access</span>
+
+        <div className="relative z-10 max-w-4xl mx-auto px-4">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            
+            {/* Left Side - Welcome Content */}
+            <div className="text-center lg:text-left">
+              {/* Announcement Bar */}
+              <div className="inline-flex items-center bg-black text-white px-4 py-2 rounded-full text-sm font-medium mb-8">
+                <span>Welcome back to Korbly</span>
+                <ChevronRight className="w-4 h-4 ml-2" />
               </div>
-              
-              <h1 className="text-4xl lg:text-5xl font-bold leading-tight">
-                Welcome Back to
-                <span className="block bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">
-                  Korbly Platform
+
+              {/* Main Headline */}
+              <h1 className="text-5xl md:text-6xl font-semibold text-gray-900 mb-6 tracking-tight leading-none">
+                Sign in to your
+                <br />
+                <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent">
+                  dashboard.
                 </span>
               </h1>
-              
-              <p className="text-xl text-slate-300 leading-relaxed">
-                Access your institutional private credit dashboard and manage your investment portfolio with confidence.
-              </p>
-            </div>
 
-            {/* Stats Grid */}
-            <div className="space-y-6">
-              <div className="grid grid-cols-2 gap-6">
+              <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+                Access your institutional private credit portfolio and manage investments with confidence.
+              </p>
+
+              {/* Features Grid */}
+              <div className="grid grid-cols-2 gap-6 mb-8">
                 {[
-                  { icon: <TrendingUp className="w-6 h-6" />, label: "Real-time Analytics", color: "from-blue-500 to-cyan-500" },
-                  { icon: <Users className="w-6 h-6" />, label: "Secure Access", color: "from-purple-500 to-pink-500" },
-                  { icon: <Award className="w-6 h-6" />, label: "Compliance Ready", color: "from-green-500 to-emerald-500" },
-                  { icon: <Globe className="w-6 h-6" />, label: "Global Markets", color: "from-amber-500 to-orange-500" }
+                  { icon: <TrendingUp className="w-6 h-6" />, label: "Real-time Analytics" },
+                  { icon: <Shield className="w-6 h-6" />, label: "Secure Access" },
+                  { icon: <Award className="w-6 h-6" />, label: "Compliance Ready" },
+                  { icon: <Globe className="w-6 h-6" />, label: "Global Markets" }
                 ].map((feature, index) => (
                   <div key={index} className="flex items-center space-x-3">
-                    <div className={`p-3 rounded-xl bg-gradient-to-r ${feature.color}`}>
-                      <div className="text-white">{feature.icon}</div>
-                    </div>
-                    <div>
-                      <div className="font-semibold text-sm">{feature.label}</div>
-                    </div>
+                    <div className="text-blue-600">{feature.icon}</div>
+                    <span className="text-gray-700 font-medium">{feature.label}</span>
                   </div>
                 ))}
               </div>
 
-              {/* Live Dashboard Preview */}
-              <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
+              {/* Live Portfolio Preview */}
+              <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-semibold text-lg">Portfolio Overview</h3>
-                  <div className="flex items-center space-x-2 px-3 py-1 bg-green-500/20 rounded-full">
-                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                    <span className="text-green-400 text-sm font-medium">Live</span>
+                  <h3 className="font-semibold text-gray-900">Portfolio Overview</h3>
+                  <div className="flex items-center space-x-2 px-3 py-1 bg-green-100 rounded-full">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <span className="text-green-700 text-sm font-medium">Live</span>
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div className="bg-white/10 p-4 rounded-xl">
-                    <div className="text-2xl font-bold text-white">$2.3B</div>
-                    <div className="text-slate-300 text-sm">Total AUM</div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-gray-50 p-4 rounded-xl">
+                    <div className="text-2xl font-bold text-gray-900">$2.3B</div>
+                    <div className="text-gray-600 text-sm">Total AUM</div>
                   </div>
-                  <div className="bg-white/10 p-4 rounded-xl">
-                    <div className="text-2xl font-bold text-green-400">+12.4%</div>
-                    <div className="text-slate-300 text-sm">YTD Return</div>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-slate-300">Portfolio Health</span>
-                    <span className="text-green-400">Excellent</span>
-                  </div>
-                  <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-green-500 to-emerald-400 rounded-full" style={{ width: '85%' }}></div>
+                  <div className="bg-gray-50 p-4 rounded-xl">
+                    <div className="text-2xl font-bold text-green-600">+12.4%</div>
+                    <div className="text-gray-600 text-sm">YTD Return</div>
                   </div>
                 </div>
-              </div>
-
-              {/* Security Features */}
-              <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10">
-                <div className="flex items-center space-x-2 mb-3">
-                  <Lock className="w-4 h-4 text-amber-400" />
-                  <span className="font-medium text-sm">Bank-Grade Security</span>
-                </div>
-                <ul className="space-y-1.5 text-slate-300 text-sm">
-                  <li className="flex items-center space-x-2">
-                    <CheckCircle className="w-3 h-3 text-green-400" />
-                    <span>256-bit SSL Encryption</span>
-                  </li>
-                  <li className="flex items-center space-x-2">
-                    <CheckCircle className="w-3 h-3 text-green-400" />
-                    <span>Multi-Factor Authentication</span>
-                  </li>
-                  <li className="flex items-center space-x-2">
-                    <CheckCircle className="w-3 h-3 text-green-400" />
-                    <span>SOC 2 Type II Compliant</span>
-                  </li>
-                </ul>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
 
-      {/* Right Side - Login Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
-        <div className="w-full max-w-md">
-          <div className="bg-white rounded-2xl shadow-2xl p-8 lg:p-10">
-            {/* Header */}
-            <div className="text-center mb-8">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-2xl mb-4">
-                <Lock className="w-8 h-8 text-blue-600" />
+            {/* Right Side - Login Form */}
+            <div className="bg-white rounded-3xl shadow-xl p-8 max-w-md mx-auto w-full">
+              {/* Header */}
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-2xl mb-4">
+                  <Lock className="w-8 h-8 text-blue-600" />
+                </div>
+                <h2 className="text-3xl font-bold text-gray-900 mb-2">
+                  Sign In
+                </h2>
+                <p className="text-gray-600">
+                  Access your institutional dashboard
+                </p>
               </div>
-              <h2 className="text-3xl font-bold text-slate-900 mb-2">
-                Sign In
-              </h2>
-              <p className="text-slate-600">
-                Access your institutional dashboard
-              </p>
-            </div>
 
-            {/* Demo Accounts Toggle */}
-            <div className="mb-6">
-              <button
-                onClick={() => setShowDemoAccounts(!showDemoAccounts)}
-                className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-700 hover:bg-amber-100 transition-all duration-200"
-              >
-                <Star className="w-4 h-4" />
-                <span className="font-medium">Try Demo Accounts</span>
-                <HelpCircle className="w-4 h-4" />
-              </button>
-              
-              {showDemoAccounts && (
-                <div className="mt-4 space-y-3">
-                  {demoAccounts.map((account, index) => (
+              {/* Demo Accounts Toggle */}
+              <div className="mb-6">
+                <button
+                  onClick={() => setShowDemoAccounts(!showDemoAccounts)}
+                  className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-blue-50 border border-blue-200 rounded-2xl text-blue-700 hover:bg-blue-100 transition-all duration-200"
+                >
+                  <Star className="w-4 h-4" />
+                  <span className="font-medium">Try Demo Accounts</span>
+                  <HelpCircle className="w-4 h-4" />
+                </button>
+                
+                {showDemoAccounts && (
+                  <div className="mt-4 space-y-3">
+                    {demoAccounts.map((account, index) => (
+                      <button
+                        key={index}
+                        onClick={() => handleDemoLogin(account.email, account.password, account.type)}
+                        disabled={isLoading}
+                        className="w-full p-4 bg-gray-50 hover:bg-gray-100 rounded-2xl border border-gray-200 transition-all duration-200 text-left disabled:opacity-50"
+                      >
+                        <div className="flex items-center space-x-3">
+                          <div className={`p-2 rounded-lg bg-gradient-to-r ${account.color}`}>
+                            <div className="text-white">{account.icon}</div>
+                          </div>
+                          <div className="flex-1">
+                            <div className="font-semibold text-gray-900 text-sm">{account.type}</div>
+                            <div className="text-gray-600 text-xs">{account.description}</div>
+                          </div>
+                          <ArrowRight className="w-4 h-4 text-gray-400" />
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Login Form */}
+              <div className="space-y-6">
+                {/* Error message */}
+                {loginError && (
+                  <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-2xl text-sm">
+                    {loginError}
+                  </div>
+                )}
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Email Address
+                  </label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <input
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => handleChange('email', e.target.value)}
+                      className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 bg-white"
+                      placeholder="Enter your institutional email"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Password
+                  </label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      value={formData.password}
+                      onChange={(e) => handleChange('password', e.target.value)}
+                      className="w-full pl-12 pr-12 py-3 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 bg-white"
+                      placeholder="Enter your password"
+                      required
+                    />
                     <button
-                      key={index}
-                      onClick={() => handleDemoLogin(account.email, account.password, account.type)}
-                      className="w-full p-4 bg-slate-50 hover:bg-slate-100 rounded-xl border border-slate-200 transition-all duration-200 text-left"
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
                     >
-                      <div className="flex items-center space-x-3">
-                        <div className={`p-2 rounded-lg bg-gradient-to-r ${account.color}`}>
-                          <div className="text-white">{account.icon}</div>
-                        </div>
-                        <div className="flex-1">
-                          <div className="font-semibold text-slate-900 text-sm">{account.type}</div>
-                          <div className="text-slate-600 text-xs">{account.description}</div>
-                        </div>
-                        <ArrowRight className="w-4 h-4 text-slate-400" />
-                      </div>
+                      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                     </button>
-                  ))}
+                  </div>
                 </div>
-              )}
-            </div>
 
-            {/* Login Form */}
-            <div className="space-y-6">
-              {/* Error message */}
-              {loginError && (
-                <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm">
-                  {loginError}
-                </div>
-              )}
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">
-                  Email Address
-                </label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
-                  <input
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => handleChange('email', e.target.value)}
-                    className="w-full pl-12 pr-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 bg-white"
-                    placeholder="Enter your institutional email"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">
-                  Password
-                </label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    value={formData.password}
-                    onChange={(e) => handleChange('password', e.target.value)}
-                    className="w-full pl-12 pr-12 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 bg-white"
-                    placeholder="Enter your password"
-                    required
-                  />
+                <div className="flex items-center justify-between">
+                  <label className="flex items-center space-x-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formData.rememberMe}
+                      onChange={(e) => handleChange('rememberMe', e.target.checked)}
+                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    />
+                    <span className="text-sm text-gray-600">Remember me</span>
+                  </label>
+                  
                   <button
                     type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                    className="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors"
+                    onClick={() => alert('Password reset functionality would be implemented here.')}
                   >
-                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    Forgot password?
                   </button>
                 </div>
-              </div>
 
-              <div className="flex items-center justify-between">
-                <label className="flex items-center space-x-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={formData.rememberMe}
-                    onChange={(e) => handleChange('rememberMe', e.target.checked)}
-                    className="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500"
-                  />
-                  <span className="text-sm text-slate-600">Remember me</span>
-                </label>
-                
                 <button
-                  type="button"
-                  className="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors"
+                  onClick={handleSubmit}
+                  disabled={isLoading || !formData.email || !formData.password}
+                  className={`w-full flex items-center justify-center space-x-2 py-3 px-6 rounded-2xl font-semibold transition-all duration-200 ${
+                    isLoading || !formData.email || !formData.password
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                      : 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg hover:shadow-xl transform hover:scale-105'
+                  }`}
                 >
-                  Forgot password?
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <span>Signing In...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Sign In</span>
+                      <ArrowRight className="w-5 h-5" />
+                    </>
+                  )}
                 </button>
               </div>
 
-              <button
-                onClick={handleSubmit}
-                disabled={isLoading || !formData.email || !formData.password}
-                className={`w-full flex items-center justify-center space-x-2 py-3 px-6 rounded-xl font-semibold transition-all duration-200 ${
-                  isLoading || !formData.email || !formData.password
-                    ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
-                    : 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'
-                }`}
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    <span>Signing In...</span>
-                  </>
-                ) : (
-                  <>
-                    <span>Sign In</span>
-                    <ArrowRight className="w-5 h-5" />
-                  </>
-                )}
-              </button>
-            </div>
+              {/* Divider */}
+              <div className="my-8 flex items-center">
+                <div className="flex-1 h-px bg-gray-200"></div>
+                <span className="px-4 text-sm text-gray-500">New to Korbly?</span>
+                <div className="flex-1 h-px bg-gray-200"></div>
+              </div>
 
-            {/* Divider */}
-            <div className="my-8 flex items-center">
-              <div className="flex-1 h-px bg-slate-200"></div>
-              <span className="px-4 text-sm text-slate-500">New to Korbly?</span>
-              <div className="flex-1 h-px bg-slate-200"></div>
-            </div>
+              {/* Request Access Button */}
+              <div className="flex justify-center">
+                <button 
+                  className="inline-flex items-center px-8 py-4 rounded-full text-lg font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                  onClick={() => alert('Redirecting to signup...')}
+                >
+                  Request Access
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </button>
+              </div>
 
-            {/* Request Access Button */}
-            <div className="flex justify-center">
-              <InteractiveHoverButton 
-                className="text-base font-semibold bg-gradient-to-r from-blue-600 to-purple-600 border-0"
-                onClick={() => window.location.href = '/signup'}
-              >
-                Request Access
-              </InteractiveHoverButton>
-            </div>
-
-            {/* Security Notice */}
-            <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-xl">
-              <div className="flex items-start space-x-3">
-                <Shield className="w-5 h-5 text-blue-500 mt-0.5" />
-                <div>
-                  <p className="text-sm text-blue-800 font-medium">Secure Access</p>
-                  <p className="text-xs text-blue-600 mt-1">
-                    Your login is protected by enterprise-grade security and encryption.
-                  </p>
+              {/* Security Notice */}
+              <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-2xl">
+                <div className="flex items-start space-x-3">
+                  <Shield className="w-5 h-5 text-blue-500 mt-0.5" />
+                  <div>
+                    <p className="text-sm text-blue-800 font-medium">Secure Access</p>
+                    <p className="text-xs text-blue-600 mt-1">
+                      Your login is protected by enterprise-grade security and encryption.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 };
