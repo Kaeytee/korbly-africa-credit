@@ -1,5 +1,6 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { isSessionValid, getSessionData, terminateSession, initializeSessionMonitoring, createSession } from '@/lib/session';
+import { USER_TYPES, SECURE_ROUTES } from '@/lib/constants';
 
 interface User {
   id: string;
@@ -37,21 +38,73 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
+  const logout = React.useCallback(() => {
+    setUser(null);
+    localStorage.removeItem('korbly_user');
+    window.location.replace('/login'); // Always redirect to login after logout
+  }, []);
+
+  // Effect 1: Restore session and set up activity tracking (run once)
+  React.useEffect(() => {
     // Check for stored user session on app load
     const storedUser = localStorage.getItem('korbly_user');
     if (storedUser) {
       try {
-        setUser(JSON.parse(storedUser));
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+        // In production, we would validate the session token here
+        console.log(`[AUTH] Restored session for ${parsedUser.email}`);
       } catch (error) {
+        // Invalid session data, remove it
         localStorage.removeItem('korbly_user');
+        console.log('[AUTH] Removed invalid session data');
       }
     }
     setIsLoading(false);
+
+    // Activity listeners
+    let inactivityTimer: number;
+    const resetInactivityTimer = () => {
+      if (inactivityTimer) window.clearTimeout(inactivityTimer);
+      inactivityTimer = window.setTimeout(() => {
+        if (user) {
+          console.log('[SECURITY] Session timeout due to inactivity');
+          logout();
+          window.location.href = '/login?timeout=true';
+        }
+      }, 30 * 60 * 1000); // 30 minutes
+    };
+    const trackActivity = () => {
+      localStorage.setItem('last_activity', new Date().toISOString());
+      resetInactivityTimer();
+    };
+    window.addEventListener('click', trackActivity);
+    window.addEventListener('keypress', trackActivity);
+    window.addEventListener('scroll', trackActivity);
+    window.addEventListener('mousemove', trackActivity);
+    resetInactivityTimer();
+    // Clean up on unmount
+    return () => {
+      if (inactivityTimer) window.clearTimeout(inactivityTimer);
+      window.removeEventListener('click', trackActivity);
+      window.removeEventListener('keypress', trackActivity);
+      window.removeEventListener('scroll', trackActivity);
+      window.removeEventListener('mousemove', trackActivity);
+    };
+    // eslint-disable-next-line
   }, []);
+
+  // Effect 2: Reset inactivity timer when user changes
+  React.useEffect(() => {
+    // Optionally, you can reset the timer here if you want to log out on user change
+    // (or just leave this empty if not needed)
+  }, [user]);
 
   const login = async (email: string, password: string): Promise<boolean> => {
     setIsLoading(true);
+    
+    // Security: Log login attempt without password
+    console.log(`[AUTH] Login attempt for: ${email} at ${new Date().toISOString()}`);
     
     // Demo credentials mapping - using passwords from README.md
     const demoCredentials = [
@@ -62,7 +115,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           id: '1',
           email: 'demo.pension@korbly.com',
           name: 'Sarah Johnson',
-          role: 'Senior Portfolio Manager',
+          role: 'pension_fund', // Using USER_TYPES constant values
           organization: 'Ghana National Pension Fund'
         }
       },
@@ -129,7 +182,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           id: '1',
           email: 'demo.pension@korbly.com',
           name: 'Sarah Johnson',
-          role: 'Senior Portfolio Manager',
+          role: 'pension_fund',
           organization: 'Ghana National Pension Fund'
         }
       },
@@ -140,7 +193,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           id: '2',
           email: 'demo.insurance@korbly.com',
           name: 'Michael Chen',
-          role: 'Chief Investment Officer',
+          role: 'insurance',
           organization: 'African Re Insurance'
         }
       },
@@ -151,7 +204,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           id: '5',
           email: 'demo.asset@korbly.com',
           name: 'Emma Thompson',
-          role: 'Fund Manager',
+          role: 'asset_manager',
           organization: 'Actis Capital'
         }
       }
@@ -175,11 +228,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     });
   };
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('korbly_user');
-  };
-
   const updateUser = (userData: Partial<User>) => {
     if (user) {
       const updatedUser = { ...user, ...userData };
@@ -187,6 +235,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       localStorage.setItem('korbly_user', JSON.stringify(updatedUser));
     }
   };
+
+  // Effect: Navigate to dashboard after successful login
+  React.useEffect(() => {
+    if (user && window.location.pathname === '/login') {
+      const dashboardRoute =
+        SECURE_ROUTES?.DASHBOARD?.[user.role] || '/dashboard';
+      window.location.replace(dashboardRoute);
+    }
+  }, [user]);
 
   const value = {
     user,
