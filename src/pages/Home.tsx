@@ -64,7 +64,10 @@ const Home = () => {
 
             {/* CTA Buttons - Desktop */}
             <div className="hidden md:flex items-center space-x-4">
-              <button className="text-gray-700 hover:text-gray-900 font-medium transition-colors">
+              <button 
+                onClick={() => window.location.href = '/login'}
+                className="text-gray-700 hover:text-gray-900 font-medium transition-colors"
+              >
                 Sign In
               </button>
               <button 
