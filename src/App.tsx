@@ -15,6 +15,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Onboarding from "./pages/Onboarding";
 import Dashboard from "./pages/Dashboard";
+import NewDashboard from "./pages/NewDashboard";
 import NotFound from "./pages/NotFound";
 import SmeDashboard from "./pages/SmeDashboard";
 import InvestorDashboard from "./pages/InvestorDashboard";
@@ -33,7 +34,8 @@ import RegulatorDashboard from "./pages/institutional/RegulatorDashboard";
 // Import institutional module pages
 import CreditEngine from "./pages/modules/CreditEngine";
 import Syndication from "./pages/modules/Syndication";
-import Valuation from "./pages/modules/Valuation";  
+import Valuation from "./pages/modules/Valuation";
+import EnhancedValuation from "./pages/modules/EnhancedValuation";
 import Documentation from "./pages/modules/Documentation";
 import Portfolio from "./pages/modules/Portfolio";
 import Compliance from "./pages/modules/Compliance";
@@ -121,9 +123,19 @@ const App = () => (
             <Route path="/signup" element={<Signup />} />
             <Route path="/onboarding" element={<Onboarding />} />
             
-            {/* Legacy Dashboard Route - Redirects to appropriate dashboard */}
+            {/* Professional Dashboard with sidebar and navbar */}
             <Route 
               path="/dashboard" 
+              element={
+                <ProtectedRoute>
+                  <NewDashboard />
+                </ProtectedRoute>
+              } 
+            />
+            
+            {/* Legacy Dashboard - Kept for reference */}
+            <Route 
+              path="/dashboard/legacy" 
               element={
                 <ProtectedRoute>
                   <Dashboard />
@@ -227,6 +239,8 @@ const App = () => (
             <Route path="/institutional/:userType/credit-engine" element={<ProtectedRoute><CreditEngine /></ProtectedRoute>} />
             <Route path="/institutional/:userType/syndication" element={<ProtectedRoute><Syndication /></ProtectedRoute>} />
             <Route path="/institutional/:userType/valuation" element={<ProtectedRoute><Valuation /></ProtectedRoute>} />
+            {/* Enhanced Valuation Module with Pro Dashboard */}
+            <Route path="/institutional/:userType/enhanced-valuation" element={<ProtectedRoute><EnhancedValuation /></ProtectedRoute>} />
             <Route path="/institutional/:userType/documentation" element={<ProtectedRoute><Documentation /></ProtectedRoute>} />
             <Route path="/institutional/:userType/portfolio" element={<ProtectedRoute><Portfolio /></ProtectedRoute>} />
             <Route path="/institutional/:userType/compliance" element={<ProtectedRoute><Compliance /></ProtectedRoute>} />
