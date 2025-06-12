@@ -1,7 +1,8 @@
-import { ReactNode, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { ReactNode, useEffect, useMemo } from 'react';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import DynamicLayout from './DynamicLayout';
+import BreadcrumbNavigation from '@/components/navigation/BreadcrumbNavigation';
 import { USER_TYPES, SECURE_ROUTES } from '@/lib/constants';
 
 interface ModuleLayoutProps {
@@ -96,9 +97,42 @@ const ModuleLayout = ({ children, moduleName }: ModuleLayoutProps) => {
 
   // All allowed user types for this application
   const allUserTypes = Object.values(USER_TYPES);
+  const location = useLocation();
+  
+  // Generate breadcrumb items based on current module and user type
+  const breadcrumbItems = useMemo(() => {
+    if (!userType) return [];
+    
+    // Get user-friendly type name for display
+    let userTypeDisplay = userType;
+    switch(userType) {
+      case USER_TYPES.PENSION_FUND:
+        userTypeDisplay = 'Pension Fund';
+        break;
+      case USER_TYPES.INSURANCE:
+        userTypeDisplay = 'Insurance';
+        break;
+      case USER_TYPES.DFI:
+        userTypeDisplay = 'DFI';
+        break;
+      // Add other user types as needed
+    }
+    
+    // Get dashboard path for this user type
+    const dashboardPath = SECURE_ROUTES.DASHBOARD[userType as keyof typeof SECURE_ROUTES.DASHBOARD] || '/dashboard';
+    
+    return [
+      { label: 'Dashboard', href: dashboardPath },
+      { label: userTypeDisplay, href: dashboardPath },
+      { label: moduleName }
+    ];
+  }, [userType, moduleName]);
 
   return (
     <DynamicLayout requireAuth={true} allowedUserTypes={allUserTypes}>
+      <div className="mb-6">
+        <BreadcrumbNavigation items={breadcrumbItems} />
+      </div>
       {children}
     </DynamicLayout>
   );

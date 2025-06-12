@@ -22,7 +22,9 @@ import InvestorDashboard from "./pages/InvestorDashboard";
 
 // Import institutional dashboard pages
 import InstitutionalPensionDashboard from "./pages/institutional/PensionDashboard";
+import EnhancedPensionDashboard from "./pages/institutional/EnhancedPensionDashboard";
 import InstitutionalInsuranceDashboard from "./pages/institutional/InsuranceDashboard";
+import EnhancedInsuranceDashboard from "./pages/institutional/EnhancedInsuranceDashboard";
 import InstitutionalDfiDashboard from "./pages/institutional/DfiDashboard";
 import InstitutionalAssetManagerDashboard from "./pages/institutional/AssetManagerDashboard";
 import InstitutionalSovereignDashboard from "./pages/institutional/SovereignDashboard";
@@ -171,10 +173,26 @@ const App = () => (
               } 
             />
             <Route 
+              path={`${SECURE_ROUTES.DASHBOARD[USER_TYPES.PENSION_FUND]}/enhanced`}
+              element={
+                <ProtectedRoute requiredUserType={USER_TYPES.PENSION_FUND}>
+                  <EnhancedPensionDashboard />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
               path={SECURE_ROUTES.DASHBOARD[USER_TYPES.INSURANCE]} 
               element={
                 <ProtectedRoute requiredUserType={USER_TYPES.INSURANCE}>
                   <InstitutionalInsuranceDashboard />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path={`${SECURE_ROUTES.DASHBOARD[USER_TYPES.INSURANCE]}/enhanced`}
+              element={
+                <ProtectedRoute requiredUserType={USER_TYPES.INSURANCE}>
+                  <EnhancedInsuranceDashboard />
                 </ProtectedRoute>
               } 
             />

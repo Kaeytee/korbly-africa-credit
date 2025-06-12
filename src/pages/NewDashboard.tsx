@@ -2,9 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import DynamicLayout from '@/components/layout/DynamicLayout';
-import DashboardOverview from '@/components/dashboard/DashboardOverview';
-import ModuleGrid from '@/components/dashboard/ModuleGrid';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import ModuleDashboard from '@/components/dashboard/ModuleDashboard';
 
 const Dashboard = () => {
   const { isAuthenticated, isLoading, user } = useAuth();
@@ -76,46 +74,7 @@ const Dashboard = () => {
 
   return (
     <DynamicLayout>
-      {/* Main Dashboard Content */}
-      <div className="space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-          <h1 className="text-2xl font-semibold text-slate-900">Dashboard</h1>
-          <div className="mt-2 sm:mt-0">
-            <span className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">
-              Last updated: {new Date().toLocaleDateString()}
-            </span>
-          </div>
-        </div>
-        
-        {/* Dashboard Tabs */}
-        <Tabs defaultValue="overview" className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="modules">Available Modules</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="overview" className="space-y-4">
-            <DashboardOverview />
-          </TabsContent>
-          
-          <TabsContent value="modules" className="space-y-4">
-            <div className="mb-4">
-              <h2 className="text-xl font-medium text-slate-900">Your Modules</h2>
-              <p className="text-sm text-slate-500">Access your available institutional modules</p>
-            </div>
-            <ModuleGrid />
-          </TabsContent>
-          
-          <TabsContent value="analytics" className="space-y-4">
-            <div className="h-96 flex items-center justify-center border border-dashed rounded-lg bg-slate-50">
-              <div className="text-center">
-                <p className="text-slate-500">Advanced analytics will be available soon</p>
-              </div>
-            </div>
-          </TabsContent>
-        </Tabs>
-      </div>
+      <ModuleDashboard />
     </DynamicLayout>
   );
 };
