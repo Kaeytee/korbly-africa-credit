@@ -18,6 +18,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
   updateUser: (userData: Partial<User>) => void;
+  registerUser: (userType: string, userData: Partial<User>) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -196,9 +197,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           role: 'insurance',
           organization: 'African Re Insurance'
         }
-      },
-      { 
-        email: 'demo.asset@korbly.com', 
+      },      { 
+        email: 'demo.asset@korbly.com',
         password: 'demo123',
         user: {
           id: '5',
@@ -206,6 +206,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           name: 'Emma Thompson',
           role: 'asset_manager',
           organization: 'Actis Capital'
+        }
+      },
+      {
+        email: 'demo.sme@korbly.com',
+        password: 'demo123',
+        user: {
+          id: '7',
+          email: 'demo.sme@korbly.com',
+          name: 'John Mensah',
+          role: 'sme',
+          organization: 'TechGrow Ghana'
         }
       }
     ];
@@ -245,6 +256,28 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   }, [user]);
 
+  const registerUser = (userType: string, userData: Partial<User>) => {
+    // Create a new user for demo purposes
+    const newUser: User = {
+      id: `user-${Date.now()}`, // Generate a random ID based on timestamp
+      email: userData.email || 'demo@korbly.com',
+      name: userData.name || 'Demo User',
+      role: userType,
+      organization: userData.organization || 'Demo Organization',
+      avatar: userData.avatar
+    };
+    
+    // Set the user in state and localStorage
+    setUser(newUser);
+    localStorage.setItem('korbly_user', JSON.stringify(newUser));
+    
+    // For demo purposes, we'll log this action
+    console.log(`[AUTH] Registered new user of type ${userType}:`, newUser);
+    
+    // Return the dashboard URL for this user type
+    return SECURE_ROUTES?.DASHBOARD?.[userType] || '/dashboard';
+  };
+
   const value = {
     user,
     isAuthenticated: !!user,
@@ -252,6 +285,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     login,
     logout,
     updateUser,
+    registerUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

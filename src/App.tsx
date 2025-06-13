@@ -15,13 +15,16 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Onboarding from "./pages/Onboarding";
 import Dashboard from "./pages/Dashboard";
+import NewDashboard from "./pages/NewDashboard";
 import NotFound from "./pages/NotFound";
 import SmeDashboard from "./pages/SmeDashboard";
 import InvestorDashboard from "./pages/InvestorDashboard";
 
 // Import institutional dashboard pages
 import InstitutionalPensionDashboard from "./pages/institutional/PensionDashboard";
+import EnhancedPensionDashboard from "./pages/institutional/EnhancedPensionDashboard";
 import InstitutionalInsuranceDashboard from "./pages/institutional/InsuranceDashboard";
+import EnhancedInsuranceDashboard from "./pages/institutional/EnhancedInsuranceDashboard";
 import InstitutionalDfiDashboard from "./pages/institutional/DfiDashboard";
 import InstitutionalAssetManagerDashboard from "./pages/institutional/AssetManagerDashboard";
 import InstitutionalSovereignDashboard from "./pages/institutional/SovereignDashboard";
@@ -33,7 +36,8 @@ import RegulatorDashboard from "./pages/institutional/RegulatorDashboard";
 // Import institutional module pages
 import CreditEngine from "./pages/modules/CreditEngine";
 import Syndication from "./pages/modules/Syndication";
-import Valuation from "./pages/modules/Valuation";  
+import Valuation from "./pages/modules/Valuation";
+import EnhancedValuation from "./pages/modules/EnhancedValuation";
 import Documentation from "./pages/modules/Documentation";
 import Portfolio from "./pages/modules/Portfolio";
 import Compliance from "./pages/modules/Compliance";
@@ -121,9 +125,19 @@ const App = () => (
             <Route path="/signup" element={<Signup />} />
             <Route path="/onboarding" element={<Onboarding />} />
             
-            {/* Legacy Dashboard Route - Redirects to appropriate dashboard */}
+            {/* Professional Dashboard with sidebar and navbar */}
             <Route 
               path="/dashboard" 
+              element={
+                <ProtectedRoute>
+                  <NewDashboard />
+                </ProtectedRoute>
+              } 
+            />
+            
+            {/* Legacy Dashboard - Kept for reference */}
+            <Route 
+              path="/dashboard/legacy" 
               element={
                 <ProtectedRoute>
                   <Dashboard />
@@ -131,72 +145,49 @@ const App = () => (
               } 
             />
             
-            {/* SME and Basic Investor Routes */}
+            {/* SME and Basic Investor Routes - Demo mode without auth check */}
             <Route 
-              path="/sme/dashboard" 
-              element={
-                <ProtectedRoute>
-                  <SmeDashboard />
-                </ProtectedRoute>
-              } 
+              path={SECURE_ROUTES.DASHBOARD[USER_TYPES.SME]} 
+              element={<SmeDashboard />} 
             />
             <Route 
               path="/investor/dashboard" 
-              element={
-                <ProtectedRoute>
-                  <InvestorDashboard />
-                </ProtectedRoute>
-              } 
+              element={<InvestorDashboard />} 
             />
             
-            {/* Institutional Dashboard Routes - Secured by user type */}
+            {/* Institutional Dashboard Routes - Demo mode without auth check */}
             <Route 
               path={SECURE_ROUTES.DASHBOARD[USER_TYPES.PENSION_FUND]} 
-              element={
-                <ProtectedRoute requiredUserType={USER_TYPES.PENSION_FUND}>
-                  <InstitutionalPensionDashboard />
-                </ProtectedRoute>
-              } 
+              element={<InstitutionalPensionDashboard />} 
+            />
+            <Route 
+              path={`${SECURE_ROUTES.DASHBOARD[USER_TYPES.PENSION_FUND]}/enhanced`}
+              element={<EnhancedPensionDashboard />} 
             />
             <Route 
               path={SECURE_ROUTES.DASHBOARD[USER_TYPES.INSURANCE]} 
-              element={
-                <ProtectedRoute requiredUserType={USER_TYPES.INSURANCE}>
-                  <InstitutionalInsuranceDashboard />
-                </ProtectedRoute>
-              } 
+              element={<InstitutionalInsuranceDashboard />} 
+            />
+            <Route 
+              path={`${SECURE_ROUTES.DASHBOARD[USER_TYPES.INSURANCE]}/enhanced`}
+              element={<EnhancedInsuranceDashboard />} 
             />
             <Route 
               path={SECURE_ROUTES.DASHBOARD[USER_TYPES.DFI]} 
-              element={
-                <ProtectedRoute requiredUserType={USER_TYPES.DFI}>
-                  <InstitutionalDfiDashboard />
-                </ProtectedRoute>
-              } 
+              element={<InstitutionalDfiDashboard />} 
             />
             <Route 
               path={SECURE_ROUTES.DASHBOARD[USER_TYPES.ASSET_MANAGER]} 
-              element={
-                <ProtectedRoute requiredUserType={USER_TYPES.ASSET_MANAGER}>
-                  <InstitutionalAssetManagerDashboard />
-                </ProtectedRoute>
-              } 
+              element={<InstitutionalAssetManagerDashboard />} 
             />
             <Route 
               path={SECURE_ROUTES.DASHBOARD[USER_TYPES.SOVEREIGN_FUND]} 
-              element={
-                <ProtectedRoute requiredUserType={USER_TYPES.SOVEREIGN_FUND}>
-                  <InstitutionalSovereignDashboard />
-                </ProtectedRoute>
-              } 
+              element={<InstitutionalSovereignDashboard />} 
             />
+            {/* HNWI Dashboard - Demo mode without auth check */}
             <Route 
               path={SECURE_ROUTES.DASHBOARD[USER_TYPES.HNWI]} 
-              element={
-                <ProtectedRoute requiredUserType={USER_TYPES.HNWI}>
-                  <WealthDashboard />
-                </ProtectedRoute>
-              } 
+              element={<WealthDashboard />} 
             />
             <Route 
               path={SECURE_ROUTES.DASHBOARD[USER_TYPES.INSTITUTIONAL_BORROWER]} 
@@ -208,28 +199,22 @@ const App = () => (
             />
             <Route 
               path={SECURE_ROUTES.DASHBOARD[USER_TYPES.ADMIN]} 
-              element={
-                <ProtectedRoute requiredUserType={USER_TYPES.ADMIN}>
-                  <AdminDashboard />
-                </ProtectedRoute>
-              } 
+              element={<AdminDashboard />} 
             />
             <Route 
               path={SECURE_ROUTES.DASHBOARD[USER_TYPES.REGULATOR]} 
-              element={
-                <ProtectedRoute requiredUserType={USER_TYPES.REGULATOR}>
-                  <RegulatorDashboard />
-                </ProtectedRoute>
-              } 
+              element={<RegulatorDashboard />} 
             />
             
-            {/* Module Routes - Used by different institutional dashboards */}
-            <Route path="/institutional/:userType/credit-engine" element={<ProtectedRoute><CreditEngine /></ProtectedRoute>} />
-            <Route path="/institutional/:userType/syndication" element={<ProtectedRoute><Syndication /></ProtectedRoute>} />
-            <Route path="/institutional/:userType/valuation" element={<ProtectedRoute><Valuation /></ProtectedRoute>} />
-            <Route path="/institutional/:userType/documentation" element={<ProtectedRoute><Documentation /></ProtectedRoute>} />
-            <Route path="/institutional/:userType/portfolio" element={<ProtectedRoute><Portfolio /></ProtectedRoute>} />
-            <Route path="/institutional/:userType/compliance" element={<ProtectedRoute><Compliance /></ProtectedRoute>} />
+            {/* Module Routes - Used by different institutional dashboards - Demo mode without auth check */}
+            <Route path="/institutional/:userType/credit-engine" element={<CreditEngine />} />
+            <Route path="/institutional/:userType/syndication" element={<Syndication />} />
+            <Route path="/institutional/:userType/valuation" element={<Valuation />} />
+            {/* Enhanced Valuation Module with Pro Dashboard */}
+            <Route path="/institutional/:userType/enhanced-valuation" element={<EnhancedValuation />} />
+            <Route path="/institutional/:userType/documentation" element={<Documentation />} />
+            <Route path="/institutional/:userType/portfolio" element={<Portfolio />} />
+            <Route path="/institutional/:userType/compliance" element={<Compliance />} />
             
             {/* Unauthorized Access Page */}
             <Route path="/unauthorized" element={<div className="h-screen flex flex-col items-center justify-center">
