@@ -29,19 +29,53 @@ import {
   Handshake,
   ChevronRight
 } from 'lucide-react';
+import { USER_TYPES, SECURE_ROUTES } from '@/lib/constants';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Signup = () => {
   const [userType, setUserType] = useState(''); // 'hnwi', 'institution', or 'sme'
   const [currentStep, setCurrentStep] = useState(1);
+  const { registerUser } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [formData, setFormData] = useState({
+  type ComplianceChecks = {
+    licensed: boolean;
+    authority: boolean;
+    amlKyc: boolean;
+    terms: boolean;
+  };
+
+  type FormData = {
+    institutionName: string;
+    institutionType: string;
+    primaryCountry: string;
+    investmentCapacity: string;
+    regulatoryOversight: string[];
+    fullName: string;
+    jobTitle: string;
+    workEmail: string;
+    phoneNumber: string;
+    department: string;
+    yearsExperience: string;
+    documentsUploaded: boolean;
+    uploadedFiles: File[];
+    complianceChecks: ComplianceChecks;
+    password: string;
+    confirmPassword: string;
+    securityQuestion1: string;
+    securityAnswer1: string;
+    securityQuestion2: string;
+    securityAnswer2: string;
+    enableTwoFactor: boolean;
+  };
+
+  const [formData, setFormData] = useState<FormData>({
     // Step 1: Company Information
     institutionName: '',
     institutionType: '',
     primaryCountry: '',
     investmentCapacity: '', // For HNWI users
-    regulatoryOversight: [] as string[],
+    regulatoryOversight: [],
     // Step 2: Contact Information
     fullName: '',
     jobTitle: '',
@@ -51,7 +85,7 @@ const Signup = () => {
     yearsExperience: '',
     // Step 3: Verification
     documentsUploaded: false,
-    uploadedFiles: [] as File[],
+    uploadedFiles: [],
     complianceChecks: {
       licensed: false,
       authority: false,
@@ -132,22 +166,30 @@ const Signup = () => {
     }));
 
     setIsLoading(true);
+    
+    // Create a user object for the demo account based on the user type
+    const role = type === 'sme' ? USER_TYPES.SME : 
+                type === 'hnwi' ? USER_TYPES.HNWI : 
+                type === 'institution' ? USER_TYPES.PENSION_FUND : 'user';
+                
+    const demoUser = {
+      id: `demo-${Date.now()}`,
+      email: demoData[type as keyof typeof demoData].workEmail,
+      name: demoData[type as keyof typeof demoData].fullName,
+      role: role,
+      organization: demoData[type as keyof typeof demoData].institutionName
+    };
+    
+    // Store demo user in localStorage to simulate authentication
+    localStorage.setItem('korbly_user', JSON.stringify(demoUser));
+    
     setTimeout(() => {
       setIsLoading(false);
-      alert(`Demo ${type.toUpperCase()} account created! Welcome to Korbly.`);
+      
+      // Redirect to the appropriate dashboard
+      const dashboardUrl = SECURE_ROUTES.DASHBOARD[role] || '/dashboard';
+      window.location.href = dashboardUrl;
     }, 2000);
-  };
-
-  const totalSteps = 4;
-  const stepTitles = ['Company Details', 'Contact Information', 'Verification & Compliance', 'Account Security'];
-  const stepIcons = [Building2, User, FileText, Lock];
-
-  const handleNext = () => {
-    if (currentStep < totalSteps) {
-      setCurrentStep(currentStep + 1);
-    } else {
-      handleSubmit();
-    }
   };
 
   const handleBack = () => {
@@ -158,9 +200,48 @@ const Signup = () => {
 
   const handleSubmit = async () => {
     setIsLoading(true);
+    
+    // Create user object from form data
+    const userData = {
+      id: Math.floor(Math.random() * 100000).toString(),
+      name: formData.fullName,
+      email: formData.workEmail,
+      role: userType === 'sme' ? USER_TYPES.SME : 
+            userType === 'hnwi' ? USER_TYPES.HNWI : 
+            userType === 'institution' ? formData.institutionType?.toLowerCase().replace(/\s+/g, '_') || 'institution' : 'user',
+      organization: formData.institutionName || `${formData.fullName}'s Organization`
+    };
+    
+    // Store user in localStorage to simulate authentication
+    localStorage.setItem('korbly_user', JSON.stringify(userData));
+    
     setTimeout(() => {
       setIsLoading(false);
-      alert('Registration completed! Welcome to Korbly.');
+      
+      // Redirect to the appropriate dashboard based on user type
+      if (userType === 'sme') {
+        window.location.href = SECURE_ROUTES.DASHBOARD[USER_TYPES.SME];
+      } else if (userType === 'hnwi') {
+        window.location.href = SECURE_ROUTES.DASHBOARD[USER_TYPES.HNWI];
+      } else if (userType === 'institution') {
+        // Determine which institutional dashboard to use based on institution type
+        const institutionType = formData.institutionType?.toLowerCase() || '';
+        if (institutionType.includes('pension') || institutionType.includes('retirement')) {
+          window.location.href = SECURE_ROUTES.DASHBOARD[USER_TYPES.PENSION_FUND];
+        } else if (institutionType.includes('insurance')) {
+          window.location.href = SECURE_ROUTES.DASHBOARD[USER_TYPES.INSURANCE];
+        } else if (institutionType.includes('bank') || institutionType.includes('development')) {
+          window.location.href = SECURE_ROUTES.DASHBOARD[USER_TYPES.DFI];
+        } else if (institutionType.includes('asset') || institutionType.includes('fund manager')) {
+          window.location.href = SECURE_ROUTES.DASHBOARD[USER_TYPES.ASSET_MANAGER];
+        } else if (institutionType.includes('sovereign')) {
+          window.location.href = SECURE_ROUTES.DASHBOARD[USER_TYPES.SOVEREIGN_FUND];
+        } else {
+          window.location.href = '/dashboard'; // Default institutional dashboard
+        }
+      } else {
+        window.location.href = '/dashboard';
+      }
     }, 2000);
   };
 
@@ -170,7 +251,7 @@ const Signup = () => {
       setFormData(prev => ({
         ...prev,
         [parent]: {
-          ...(prev[parent as keyof typeof prev] as any),
+          ...((prev as FormData)[parent] || {}),
           [child]: value
         }
       }));
@@ -225,10 +306,11 @@ const Signup = () => {
 
   const isStepValid = (): boolean => {
     switch (currentStep) {
-      case 1:
+      case 1: {
         const basicFields = !!(formData.institutionName && formData.institutionType && formData.primaryCountry);
         const hnwiFields = userType === 'hnwi' ? !!formData.investmentCapacity : true;
         return basicFields && hnwiFields;
+      }
       case 2:
         return !!(formData.fullName && formData.jobTitle && formData.workEmail && formData.phoneNumber);
       case 3:
@@ -939,6 +1021,30 @@ const Signup = () => {
 
       default:
         return null;
+    }
+  };
+
+  // Total number of steps
+  const totalSteps = 4;
+
+  // Step titles for progress bar
+  const stepTitles = [
+    userType === 'institution'
+      ? 'Institution Details'
+      : userType === 'hnwi'
+      ? 'Investor Details'
+      : 'Business Details',
+    'Contact Information',
+    'Verification',
+    'Account Security'
+  ];
+
+  // Handle next step or submit
+  const handleNext = () => {
+    if (currentStep < totalSteps) {
+      setCurrentStep(currentStep + 1);
+    } else {
+      handleSubmit();
     }
   };
 

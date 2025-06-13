@@ -10,6 +10,7 @@ export const USER_TYPES = {
   SOVEREIGN_FUND: 'sovereign_fund',
   HNWI: 'hnwi',
   INSTITUTIONAL_BORROWER: 'institutional_borrower',
+  SME: 'sme',
   ADMIN: 'admin',
   REGULATOR: 'regulator'
 } as const;
@@ -29,6 +30,7 @@ export const SECURE_ROUTES = {
     [USER_TYPES.SOVEREIGN_FUND]: '/institutional/sovereign/dashboard',
     [USER_TYPES.HNWI]: '/wealth/dashboard',
     [USER_TYPES.INSTITUTIONAL_BORROWER]: '/issuer/dashboard',
+    [USER_TYPES.SME]: '/sme/dashboard',
     [USER_TYPES.ADMIN]: '/admin/dashboard',
     [USER_TYPES.REGULATOR]: '/regulator/dashboard',
   },
@@ -55,6 +57,7 @@ export const REQUIRES_2FA = {
   [USER_TYPES.SOVEREIGN_FUND]: true,
   [USER_TYPES.HNWI]: true,
   [USER_TYPES.INSTITUTIONAL_BORROWER]: true,
+  [USER_TYPES.SME]: false,
   [USER_TYPES.ADMIN]: true,
   [USER_TYPES.REGULATOR]: true,
 };

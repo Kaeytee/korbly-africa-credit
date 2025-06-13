@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { 
   Eye, 
   EyeOff, 
@@ -460,13 +460,14 @@ const Login = () => {
 
                 {/* Request Access Button */}
                 <div className="flex justify-center">
-                  <button 
-                    className="inline-flex items-center px-8 py-4 rounded-full text-lg font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
-                    onClick={() => alert('Redirecting to signup...')}
-                  >
-                    Request Access
-                    <ArrowRight className="w-5 h-5 ml-2" />
-                  </button>
+                  <Link to="/signup">
+                    <button 
+                      className="inline-flex items-center px-8 py-4 rounded-full text-lg font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                    >
+                      Request Access
+                      <ArrowRight className="w-5 h-5 ml-2" />
+                    </button>
+                  </Link>
                 </div>
 
                 {/* Security Notice */}
